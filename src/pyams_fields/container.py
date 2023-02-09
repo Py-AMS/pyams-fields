@@ -20,10 +20,10 @@ __docformat__ = 'restructuredtext'
 from zope.location.interfaces import ISublocations
 from zope.traversing.interfaces import ITraversable
 
-from pyams_fields.interfaces import IFormFieldContainer, IFormFieldFactory, IFormFieldContainerTarget, \
-    PYAMS_FIELDS_CONTAINER_KEY
+from pyams_fields.interfaces import IFormFieldContainer, IFormFieldContainerTarget, \
+    IFormFieldFactory, PYAMS_FIELDS_CONTAINER_KEY
 from pyams_table.testing import OrderedContainer
-from pyams_utils.adapter import adapter_config, get_annotation_adapter, ContextAdapter
+from pyams_utils.adapter import ContextAdapter, adapter_config, get_annotation_adapter
 from pyams_utils.factory import factory_config
 from pyams_utils.registry import get_pyramid_registry
 
@@ -65,7 +65,7 @@ def form_field_container(context):
 class FormFieldContainerNamespace(ContextAdapter):
     """Form fields container ++fields++ namespace"""
 
-    def traverse(self, name, furtherpath=None):
+    def traverse(self, name, furtherpath=None):  # pylint: disable=unused-argument
         """Form fields traverser"""
         container = IFormFieldContainer(self.context)
         if name:

@@ -96,6 +96,7 @@ class FormFieldAddForm(AdminModalAddForm):
     content_factory = IFormField
 
     def add(self, obj):
+        """Add form field to container"""
         IFormFieldContainer(self.context)[obj.name] = obj
 
 
@@ -177,7 +178,8 @@ class FormFieldEditForm(AdminModalEditForm):
             get_object_label(parent, self.request),
             translate(_("Form field: {}")).format(get_object_label(self.context, self.request)))
 
-    def update_widgets(self, prefix=None):
+    def update_widgets(self, prefix=None):  # pylint: disable=unused-argument
+        """Widgets update"""
         super().update_widgets()
         name = self.widgets.get('name')
         if name is not None:
@@ -246,9 +248,11 @@ class FormFieldCloneForm(AdminModalAddForm):
     fields = Fields(IFormField).select('name')
 
     def create(self, data):
+        """Create new form field by copying context"""
         return copy(self.context)
 
     def add(self, obj):
+        """Add new form field to container"""
         IFormFieldContainer(self.context.__parent__)[obj.name] = obj
 
 

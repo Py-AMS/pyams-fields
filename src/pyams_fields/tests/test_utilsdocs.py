@@ -39,8 +39,11 @@ def doc_suite(test_dir, setUp=None, tearDown=None, globs=None):  # pylint: disab
     doctest_dir = os.path.join(package_dir, 'doctests')
 
     # filtering files on extension
-    docs = [os.path.join(doctest_dir, doc) for doc in
-            os.listdir(doctest_dir) if doc.endswith('.txt') or doc.endswith('.rst')]
+    docs = [
+        os.path.join(doctest_dir, doc)
+        for doc in os.listdir(doctest_dir)
+        if doc.endswith('.txt') or doc.endswith('.rst')
+    ]
 
     for test in docs:
         suite.append(doctest.DocFileSuite(test, optionflags=flags,

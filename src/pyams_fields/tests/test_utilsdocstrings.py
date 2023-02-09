@@ -43,13 +43,12 @@ def doc_suite(test_dir, globs=None):
     docs = [doc for doc in docs if not doc.startswith('__')]
 
     for test in docs:
-        fd = open(os.path.join(package_dir, test))  # pylint: disable=invalid-name
-        content = fd.read()
-        fd.close()
+        with open(os.path.join(package_dir, test)) as fd:  # pylint: disable=invalid-name
+            content = fd.read()
         if '>>> ' not in content:
             continue
         test = test.replace('.py', '')
-        location = 'pyams_fields.%s' % test
+        location = f'pyams_fields.{test}'
         suite.append(doctest.DocTestSuite(location, optionflags=flags,
                                           globs=globs))
 

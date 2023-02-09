@@ -79,7 +79,7 @@ class FormFieldTypesVocabulary(UtilityVocabulary):
 
     interface = IFormFieldFactory
 
-    def __init__(self, context, **kw):
+    def __init__(self, context, **kw):  # pylint: disable=super-init-not-called
         request = check_request()
         registry = request.registry
         translate = request.localizer.translate
@@ -97,7 +97,7 @@ class FormFieldTypesVocabulary(UtilityVocabulary):
         return iter(self._terms.values())
 
 
-class BaseFormFieldFactory(object):
+class BaseFormFieldFactory:
     """Base form field factory"""
 
     label = None

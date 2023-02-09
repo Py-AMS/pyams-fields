@@ -16,9 +16,6 @@ This module is used for Pyramid integration
 """
 
 import re
-import os.path
-
-import pyams_fields
 
 
 __docformat__ = 'restructuredtext'
