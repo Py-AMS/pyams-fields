@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.1.1
+-----
+ - updated dependencies
+
 1.1.0
 -----
  - added support for forms rendering and handlers
