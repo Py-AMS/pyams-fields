@@ -17,12 +17,12 @@ This module defines fields container class.
 
 __docformat__ = 'restructuredtext'
 
+from zope.container.ordered import OrderedContainer
 from zope.location.interfaces import ISublocations
 from zope.traversing.interfaces import ITraversable
 
 from pyams_fields.interfaces import IFormFieldContainer, IFormFieldContainerTarget, \
     IFormFieldFactory, PYAMS_FIELDS_CONTAINER_KEY
-from pyams_table.testing import OrderedContainer
 from pyams_utils.adapter import ContextAdapter, adapter_config, get_annotation_adapter
 from pyams_utils.factory import factory_config
 from pyams_utils.registry import get_pyramid_registry

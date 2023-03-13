@@ -39,7 +39,14 @@ PyAMS_fields relies on other packages which are needing a site upgrade:
     >>> include_i18n(config)
     >>> from pyams_form import includeme as include_form
     >>> include_form(config)
-
+    >>> from pyams_security import includeme as include_security
+    >>> include_security(config)
+    >>> from pyams_layer import includeme as include_layer
+    >>> include_layer(config)
+    >>> from pyams_viewlet import includeme as include_viewlet
+    >>> include_viewlet(config)
+    >>> from pyams_skin import includeme as include_skin
+    >>> include_skin(config)
     >>> from pyams_fields import includeme as include_fields
     >>> include_fields(config)
 
@@ -60,7 +67,7 @@ Creating and using form fields
 The first step is to create a container which will be able to receive form fields. This
 container can be attached to a content implementing *IFormFieldsContainerTarget* interface:
 
-    >>> from zope.interface import alsoProvides
+    >>> from zope.interface import alsoProvides, implementer, Interface
 
     >>> from pyams_fields.interfaces import IFormFieldContainerTarget
     >>> alsoProvides(app, IFormFieldContainerTarget)
@@ -172,6 +179,150 @@ Choice and List fields require a custom schema field factory and a set of select
     [<zope.schema._bootstrapfields.TextLine object at 0x... field1>, <zope.schema._field.List object at 0x... field3>]
     >>> list(container.find_fields('choice'))
     []
+
+
+Form captcha settings
+---------------------
+
+PyAMS_fields allows usage of Google reCaptcha to validate forms. Captcha settings allow to define
+client and server keys, as well as a proxy configuration which may be required to access Google
+services:
+
+    >>> from zope.interface import alsoProvides
+    >>> from zope.container.folder import Folder
+    >>> from pyams_fields.interfaces import ICaptchaManagerInfo, ICaptchaManagerTarget, ICaptchaInfo, ICaptchaTarget
+
+    >>> alsoProvides(app, ICaptchaManagerTarget)
+
+    >>> captcha_info = ICaptchaManagerInfo(app)
+    >>> captcha_info
+    <pyams_fields.captcha.CaptchaManagerInfo object at 0x...>
+
+    >>> captcha_info.default_captcha_client_key = 'client_key'
+    >>> captcha_info.default_captcha_server_key = 'server_key'
+    >>> captcha_info.use_captcha = True
+
+    >>> captcha_info.get_captcha_settings()
+    {'use_captcha': True, 'client_key': 'client_key', 'server_key': 'server_key'}
+
+    >>> captcha_info.get_proxy_url(request) is None
+    True
+
+    >>> captcha_info.proxy_proto = 'https'
+    >>> captcha_info.proxy_host = 'proxy.example.com'
+    >>> captcha_info.proxy_port = 8080
+    >>> captcha_info.proxy_username = 'username'
+    >>> captcha_info.proxy_password = 'password'
+    >>> captcha_info.use_proxy = True
+
+    >>> captcha_info.get_proxy_url(request)
+    'https://username:password@proxy.example.com:8080/'
+
+You can set domains for which proxy usage is required:
+
+    >>> captcha_info.proxy_only_from = 'example.com'
+
+    >>> captcha_info.get_proxy_url(request) is None
+    True
+
+    >>> request = DummyRequest(host='example.com')
+    >>> captcha_info.get_proxy_url(request)
+    'https://username:password@proxy.example.com:8080/'
+
+Please note that these settings are *default* settings, which can be customized for a given
+context:
+
+    >>> alsoProvides(container, ICaptchaTarget)
+
+    >>> app['container'] = container
+
+    >>> fields_info = ICaptchaInfo(container)
+    >>> fields_info
+    <pyams_fields.captcha.CaptchaInfo object at 0x...>
+
+    >>> fields_info.override_captcha
+    False
+
+    >>> fields_info.get_captcha_settings()
+    {'use_captcha': True, 'client_key': 'client_key', 'server_key': 'server_key'}
+
+    >>> fields_info.override_captcha = True
+
+    >>> fields_info.get_captcha_settings()
+    {'use_captcha': False, 'client_key': None, 'server_key': None}
+
+    >>> fields_info.captcha_client_key = 'custom_client_key'
+    >>> fields_info.captcha_server_key = 'custom_server_key'
+
+    >>> fields_info.get_captcha_settings()
+    {'use_captcha': True, 'client_key': 'custom_client_key', 'server_key': 'custom_server_key'}
+
+
+Forms handlers
+--------------
+
+Form handlers are utilities which can handle submitted form data.
+
+    >>> from pyams_utils.registry import utility_config
+    >>> from pyams_utils.testing import call_decorator
+
+    >>> from pyams_fields.interfaces import IFormHandler, IFormHandlersTarget, IFormHandlersInfo
+    >>> alsoProvides(container, IFormHandlersTarget)
+
+    >>> handlers_info = IFormHandlersInfo(container)
+    >>> handlers_info
+    <pyams_fields.handler.FormHandlersInfo object at 0x...>
+
+Let's create a simple handler which will log submitted data:
+
+    >>> class ISimpleFormHandler(IFormHandler):
+    ...     """Simple form handler interface"""
+
+    >>> class ISimpleFormHandlerTarget(Interface):
+    ...     """Simple form handler target marker interface"""
+
+    >>> @implementer(ISimpleFormHandler)
+    ... class SimpleFormHandler:
+    ...
+    ...     label = "Simple handler"
+    ...     target_interface = ISimpleFormHandlerTarget
+    ...
+    ...     def handle(self, form, data, user_data):
+    ...         print(user_data)
+
+    >>> call_decorator(config, utility_config, SimpleFormHandler, name='simple_handler', provides=IFormHandler)
+
+    >>> handlers_info.handlers = ['simple_handler']
+    >>> handlers_info.handlers
+    ['simple_handler']
+    >>> ISimpleFormHandlerTarget.providedBy(handlers_info)
+    True
+
+Specifying a missing handler is not allowed:
+
+    >>> handlers_info.handlers = ['simple_handler', 'missing_handler']
+    Traceback (most recent call last):
+    ...
+    zope.schema._bootstrapinterfaces.WrongContainedType: ([ConstraintNotSatisfied('missing_handler', '')], 'handlers')
+
+    >>> handlers_info.handlers = []
+    >>> ISimpleFormHandlerTarget.providedBy(handlers_info)
+    False
+
+Form handlers can be traversed:
+
+    >>> from pyams_fields.handler import FormHandlersTraverser
+    >>> FormHandlersTraverser(container).traverse('') is handlers_info
+    True
+
+    >>> from pyams_fields.handler import FormHandlerInfoTraverser
+    >>> FormHandlerInfoTraverser(container).traverse('simple_handler') is None
+    True
+
+This result is normal, because we should register an adapter from the form handler target
+interface to *IFormHandlerInfo*, using the same name for form handler and for adapter. This adapter
+can then be used, for example, to store additional information related to this form handler
+configuration.
 
 
 Tests cleanup:

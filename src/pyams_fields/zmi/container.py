@@ -14,7 +14,9 @@
 
 """
 
+from pyramid.interfaces import IView
 from pyramid.view import view_config
+from zope.interface import implementer
 
 from pyams_fields.interfaces import IFormFieldContainer, IFormFieldContainerTarget
 from pyams_fields.zmi.interfaces import IFormFieldsTable
@@ -28,8 +30,8 @@ from pyams_viewlet.viewlet import viewlet_config
 from pyams_zmi.helper.container import delete_container_element, switch_element_attribute
 from pyams_zmi.interfaces import IAdminLayer
 from pyams_zmi.interfaces.viewlet import IPropertiesMenu
-from pyams_zmi.table import ContentTypeColumn, NameColumn, ReorderColumn, Table, TableAdminView, \
-    TrashColumn, VisibilityColumn, get_ordered_data_attributes
+from pyams_zmi.table import ContentTypeColumn, NameColumn, ReorderColumn, SortableTable, TableAdminView, \
+    TrashColumn, VisibilityColumn
 from pyams_zmi.zmi.viewlet.menu import NavigationMenuItem
 
 
@@ -50,18 +52,11 @@ class FormFieldsContainerMenu(NavigationMenuItem):
 
 
 @factory_config(IFormFieldsTable)
-class FormFieldsTable(Table):
+@implementer(IView)
+class FormFieldsTable(SortableTable):
     """Form fields container table"""
 
     container_class = IFormFieldContainer
-
-    @property
-    def data_attributes(self):
-        """Attributes getter"""
-        attributes = super().data_attributes
-        container = self.container_class(self.context)
-        get_ordered_data_attributes(attributes, container, self.request)
-        return attributes
 
     display_if_empty = True
 

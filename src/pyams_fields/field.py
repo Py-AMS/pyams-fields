@@ -20,7 +20,7 @@ from collections import OrderedDict
 from persistent import Persistent
 from zope.componentvocabulary.vocabulary import UtilityTerm, UtilityVocabulary
 from zope.container.contained import Contained
-from zope.schema import Bool, Choice, Date, Int, List, Text, TextLine, URI
+from zope.schema import Bool, Choice, Date, Datetime, Int, List, Text, TextLine, Time, URI
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
@@ -32,7 +32,7 @@ from pyams_utils.adapter import adapter_config
 from pyams_utils.factory import factory_config
 from pyams_utils.registry import get_pyramid_registry, utility_config
 from pyams_utils.request import check_request
-from pyams_utils.schema import DottedDecimalField, MailAddressField
+from pyams_utils.schema import DatesRangeField, DatetimesRangeField, DottedDecimalField, MailAddressField, TimezoneField
 from pyams_utils.traversing import get_parent
 from pyams_utils.vocabulary import vocabulary_config
 
@@ -186,7 +186,77 @@ class DateFieldFactory(BaseFormFieldFactory):
     field_factory = Date
     weight = 50
 
-    icon_class = 'fas fa-calendar-days'
+    icon_class = 'fas fa-calendar-day'
+
+
+@utility_config(name='time',
+                provides=IFormFieldFactory)
+class TimeFieldFactory(BaseFormFieldFactory):
+    """Time field factory"""
+
+    label = _("Time")
+    field_factory = Time
+    weight = 52
+
+    icon_class = 'fas fa-clock'
+
+
+@utility_config(name='datetime',
+                provides=IFormFieldFactory)
+class DatetimeFieldFactory(BaseFormFieldFactory):
+    """Datetime field factory"""
+
+    label = _("Datetime")
+    field_factory = Datetime
+    weight = 54
+
+    icon_class = 'fas fa-clock'
+
+
+@utility_config(name='dates-range',
+                provides=IFormFieldFactory)
+class DatesRangeFieldFactory(BaseFormFieldFactory):
+    """Dates range factory"""
+
+    label = _("Dates range")
+    field_factory = DatesRangeField
+    weight = 56
+
+    icon_class = 'fas fa-calendar-week'
+
+    def get_schema_field(self, field):
+        """Schema field getter"""
+        i18n = II18n(field)
+        result = self.field_factory(title=i18n.query_attribute('label'),
+                                    description=i18n.query_attribute('description'),
+                                    required=field.required,
+                                    from_label=_("first date"),
+                                    to_label=_("last date"))
+        result.__name__ = field.name
+        return result
+
+
+@utility_config(name='datetime-range',
+                provides=IFormFieldFactory)
+class DatetimeRangeFieldFactory(BaseFormFieldFactory):
+    """Datetime range factory"""
+
+    label = _("Datetime range")
+    field_factory = DatetimesRangeField
+    weight = 58
+
+    icon_class = 'fas fa-calendar-week'
+
+    def get_schema_field(self, field):
+        """Schema field getter"""
+        i18n = II18n(field)
+        result = self.field_factory(title=i18n.query_attribute('label'),
+                                    description=i18n.query_attribute('description'),
+                                    required=field.required,
+                                    from_label=_("first date"),
+                                    to_label=_("last date"))
+        result.__name__ = field.name
+        return result
 
 
 @utility_config(name='phone_number',
@@ -279,3 +349,15 @@ class ListFieldFactory(ValuesFieldFactory):
                                     value_type=Choice(vocabulary=vocabulary))
         result.__name__ = field.name
         return result
+
+
+@utility_config(name='timezone',
+                provides=IFormFieldFactory)
+class TimezoneFieldFactory(BaseFormFieldFactory):
+    """Timezone field factory"""
+
+    label = _("Timezone")
+    field_factory = TimezoneField
+    weight = 110
+
+    icon_class = 'fas fa-globe'

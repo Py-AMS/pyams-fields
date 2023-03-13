@@ -10,23 +10,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 
-"""PyAMS_fields.zmi.interfaces module
+"""PyAMS_fields.skin.interfaces module
 
+This module provides custom fields rendering interfaces.
 """
+
+__docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 
 
-__docformat__ = 'restructuredtext'
-
-
-class IFormFieldsTable(Interface):
-    """Form fields table marker interface"""
-
-
-class IFormFieldAddForm(Interface):
-    """Form field add form marker interface"""
-
-
-class IFormHandlersSettingsGroup(Interface):
-    """Form handlers settings group marker interface"""
+class IFormFieldContainerInputForm(Interface):
+    """Form fields container input form marker interface"""
