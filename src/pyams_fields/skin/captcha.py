@@ -10,8 +10,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 
-"""PyAMS_*** module
+"""PyAMS_fields.skin.captcha module
 
+This module provides components for Google reCaptcha v3 support.
 """
 
 __docformat__ = 'restructuredtext'
