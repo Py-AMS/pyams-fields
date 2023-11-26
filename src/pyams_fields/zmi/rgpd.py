@@ -55,9 +55,9 @@ class RGPDInfoEditFormGroup(FormGroupChecker):
 
     weight = 30
 
-    def update_widgets(self, prefix=None):
+    def update_widgets(self, prefix=None, use_form_mode=True):
         """Widgets update"""
-        super().update_widgets(prefix)
+        super().update_widgets(prefix, use_form_mode)
         warning = self.widgets.get('rgpd_warning')
         if warning is not None:
             warning.suffix = notice = RGPDWarningNotice(self.context, self.request, self.parent_form)

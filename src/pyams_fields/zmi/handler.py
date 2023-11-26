@@ -45,8 +45,8 @@ class FormHandlersSettingsGroup(FormGroupSwitcher):
 
     weight = 40
 
-    def update_widgets(self, prefix=None):
-        super().update_widgets(prefix)
+    def update_widgets(self, prefix=None, use_form_mode=True):
+        super().update_widgets(prefix, use_form_mode)
         handlers = self.widgets.get('handlers')
         if handlers is not None:
             translate = self.request.localizer.translate
