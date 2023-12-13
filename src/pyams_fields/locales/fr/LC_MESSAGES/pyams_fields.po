@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2023-03-13 17:49+0100\n"
+"POT-Creation-Date: 2023-12-06 11:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -398,95 +398,13 @@ msgstr ""
 "formulaire ; les données saisies leur seront transmises dans l'ordre de "
 "sélection"
 
-#: src/pyams_fields/skin/__init__.py:61
-msgid "Can't submit form."
-msgstr "Une erreur s'est produite."
+#: src/pyams_fields/zmi/handler.py:42
+msgid "Form handlers"
+msgstr "Traitement des données du formulaire"
 
-#: src/pyams_fields/skin/__init__.py:62
-msgid "Missing recaptcha token!"
-msgstr "Données manquantes pour la vérification du captcha !"
-
-#: src/pyams_fields/skin/__init__.py:63
-msgid "Can't verify recaptcha token! Are you a robot?"
-msgstr "Impossible de vérifier le captcha. Seriez-vous un robot ?"
-
-#: src/pyams_fields/skin/__init__.py:117
-msgid "You can't submit this form without accepting data usage rules."
-msgstr ""
-"Vous ne pouvez pas soumettre les données de ce formulaire sans accepter les "
-"conditions d'utilisation"
-
-#: src/pyams_fields/skin/__init__.py:224
-msgid "CSRF token"
-msgstr "Jeton CSRF"
-
-#: src/pyams_fields/skin/__init__.py:231
-msgid "Captcha"
-msgstr "Captcha"
-
-#: src/pyams_fields/skin/converter.py:42
-msgid "yes"
-msgstr "oui"
-
-#: src/pyams_fields/skin/converter.py:42
-msgid "no"
-msgstr "non"
-
-#: src/pyams_fields/skin/converter.py:79
-msgid "from %d/%m/%Y"
-msgstr "à partir du %d/%m/%Y"
-
-#: src/pyams_fields/skin/converter.py:80
-msgid "to %d/%m/%Y"
-msgstr "jusqu'au %d/%m/%Y"
-
-#: src/pyams_fields/skin/converter.py:97
-msgid "from %d/%m/%Y at %H:%M"
-msgstr "à partir du %d/%m/%Y à %H:%M"
-
-#: src/pyams_fields/skin/converter.py:98
-msgid "to %d/%m/%Y at %H:%M"
-msgstr "jusqu'au %d/%m/%Y à %H:%M"
-
-#: src/pyams_fields/zmi/__init__.py:57
-msgid "Add form field"
-msgstr "Ajouter un champ de saisie"
-
-#: src/pyams_fields/zmi/__init__.py:90
-msgid "Add new form field"
-msgstr "Nouveau champ de saisie"
-
-#: src/pyams_fields/zmi/__init__.py:92
-msgid "New form field properties"
-msgstr "Propriétés du nouveau champ"
-
-#: src/pyams_fields/zmi/__init__.py:111
-msgid "Another form field already exists with this name!"
-msgstr "Il existe déjà un autre champ de ce formulaire portant ce nom !"
-
-#: src/pyams_fields/zmi/__init__.py:168
-msgid "Form field properties"
-msgstr "Propriétés du champ"
-
-#: src/pyams_fields/zmi/__init__.py:179 src/pyams_fields/zmi/__init__.py:244
-#, python-format
-msgid "Form field: {}"
-msgstr "Champ de saisie : {}"
-
-#: src/pyams_fields/zmi/__init__.py:214
-msgid "Clone field"
-msgstr "Dupliquer le champ"
-
-#: src/pyams_fields/zmi/__init__.py:246
-msgid "Clone form field"
-msgstr "Dupliquer le champ de saisie"
-
-#: src/pyams_fields/zmi/rgpd.py:78
-msgid ""
-"You must define RGPD consent text and user rights to enable RGPD consent!"
-msgstr ""
-"Vous devez définir le texte de consentement de l'utilisateur ainsi que ses "
-"droits de retrait pour activer le support au RGPD !"
+#: src/pyams_fields/zmi/handler.py:53
+msgid "No selected handler"
+msgstr "Aucun module de prise en charge sélectionné"
 
 #: src/pyams_fields/zmi/container.py:50 src/pyams_fields/zmi/container.py:160
 msgid "Form fields"
@@ -499,6 +417,42 @@ msgstr "Libellé"
 #: src/pyams_fields/zmi/container.py:163
 msgid "Form fields list"
 msgstr "Liste des champs de saisie"
+
+#: src/pyams_fields/zmi/rgpd.py:78
+msgid ""
+"You must define RGPD consent text and user rights to enable RGPD consent!"
+msgstr ""
+"Vous devez définir le texte de consentement de l'utilisateur ainsi que ses "
+"droits de retrait pour activer le support au RGPD !"
+
+#: src/pyams_fields/zmi/__init__.py:58
+msgid "Add form field"
+msgstr "Ajouter un champ de saisie"
+
+#: src/pyams_fields/zmi/__init__.py:85
+msgid "New form field"
+msgstr "Nouveau champ de saisie"
+
+#: src/pyams_fields/zmi/__init__.py:86 src/pyams_fields/zmi/__init__.py:242
+msgid "New form field properties"
+msgstr "Propriétés du nouveau champ"
+
+#: src/pyams_fields/zmi/__init__.py:105
+msgid "Another form field already exists with this name!"
+msgstr "Il existe déjà un autre champ de ce formulaire portant ce nom !"
+
+#: src/pyams_fields/zmi/__init__.py:166 src/pyams_fields/zmi/__init__.py:240
+#, python-format
+msgid "Form field: {}"
+msgstr "Champ de saisie : {}"
+
+#: src/pyams_fields/zmi/__init__.py:168
+msgid "Form field properties"
+msgstr "Propriétés du champ"
+
+#: src/pyams_fields/zmi/__init__.py:213
+msgid "Clone field"
+msgstr "Dupliquer le champ"
 
 #: src/pyams_fields/zmi/captcha.py:56
 msgid "You must define client and server keys to use a captcha"
@@ -518,14 +472,6 @@ msgid ""
 msgstr ""
 "Vous devez redéfinir les clés cliente et serveur, au aucune des deux si vous "
 "souhaitez désactiver le captcha pour ce formulaire !"
-
-#: src/pyams_fields/zmi/handler.py:42
-msgid "Form handlers"
-msgstr "Traitement des données du formulaire"
-
-#: src/pyams_fields/zmi/handler.py:53
-msgid "No selected handler"
-msgstr "Aucun module de prise en charge sélectionné"
 
 #: src/pyams_fields/zmi/templates/rgpd-warning.pt:3
 #: src/pyams_fields/zmi/templates/rgpd-user-rights.pt:3
@@ -552,6 +498,59 @@ msgstr ""
 "retrait au consentement à l'utilisation des données que vous nous aurez "
 "fournies à travers ce formulaire, veuillez consulter notre politique de "
 "confidentialité."
+
+#: src/pyams_fields/skin/converter.py:42
+msgid "yes"
+msgstr "oui"
+
+#: src/pyams_fields/skin/converter.py:42
+msgid "no"
+msgstr "non"
+
+#: src/pyams_fields/skin/converter.py:79
+msgid "from %d/%m/%Y"
+msgstr "à partir du %d/%m/%Y"
+
+#: src/pyams_fields/skin/converter.py:80
+msgid "to %d/%m/%Y"
+msgstr "jusqu'au %d/%m/%Y"
+
+#: src/pyams_fields/skin/converter.py:97
+msgid "from %d/%m/%Y at %H:%M"
+msgstr "à partir du %d/%m/%Y à %H:%M"
+
+#: src/pyams_fields/skin/converter.py:98
+msgid "to %d/%m/%Y at %H:%M"
+msgstr "jusqu'au %d/%m/%Y à %H:%M"
+
+#: src/pyams_fields/skin/__init__.py:61
+msgid "Can't submit form."
+msgstr "Une erreur s'est produite."
+
+#: src/pyams_fields/skin/__init__.py:62
+msgid "Missing recaptcha token!"
+msgstr "Données manquantes pour la vérification du captcha !"
+
+#: src/pyams_fields/skin/__init__.py:63
+msgid "Can't verify recaptcha token! Are you a robot?"
+msgstr "Impossible de vérifier le captcha. Seriez-vous un robot ?"
+
+#: src/pyams_fields/skin/__init__.py:117
+msgid "You can't submit this form without accepting data usage rules."
+msgstr ""
+"Vous ne pouvez pas soumettre les données de ce formulaire sans accepter les "
+"conditions d'utilisation"
+
+#: src/pyams_fields/skin/__init__.py:224
+msgid "CSRF token"
+msgstr "Jeton CSRF"
+
+#: src/pyams_fields/skin/__init__.py:231
+msgid "Captcha"
+msgstr "Captcha"
+
+#~ msgid "Clone form field"
+#~ msgstr "Dupliquer le champ de saisie"
 
 #~ msgid ""
 #~ "If set, this prefix will be added automatically to all submissions IDs"

@@ -28,20 +28,21 @@ from pyams_i18n.interfaces import II18n
 from pyams_layer.interfaces import IPyAMSLayer
 from pyams_security.interfaces import IViewContextPermissionChecker
 from pyams_security.interfaces.base import FORBIDDEN_PERMISSION, VIEW_SYSTEM_PERMISSION
+from pyams_skin.interfaces.view import IModalPage
 from pyams_skin.viewlet.actions import ContextAddAction
 from pyams_table.interfaces import IColumn
-from pyams_utils.adapter import ContextRequestViewAdapter, adapter_config
+from pyams_utils.adapter import ContextRequestViewAdapter, adapter_config, query_adapter
 from pyams_utils.traversing import get_parent
 from pyams_viewlet.viewlet import viewlet_config
 from pyams_zmi.form import AdminModalAddForm, AdminModalEditForm
 from pyams_zmi.helper.event import get_json_table_row_add_callback, \
     get_json_table_row_refresh_callback
 from pyams_zmi.interfaces import IAdminLayer, IObjectHint, IObjectIcon, IObjectLabel
+from pyams_zmi.interfaces.form import IFormTitle
 from pyams_zmi.interfaces.table import ITableElementEditor
 from pyams_zmi.interfaces.viewlet import IToolbarViewletManager
 from pyams_zmi.table import ActionColumn, TableElementEditor
 from pyams_zmi.utils import get_object_label
-
 
 __docformat__ = 'restructuredtext'
 
@@ -81,14 +82,7 @@ class FormFieldAddForm(AdminModalAddForm):
                 return None
         return AdminModalAddForm.__new__(cls)
 
-    @property
-    def title(self):
-        """Form title getter"""
-        translate = self.request.localizer.translate
-        return '<small>{}</small><br />{}'.format(
-            get_object_label(self.context, self.request),
-            translate(_("Add new form field")))
-
+    subtitle = _("New form field")
     legend = _("New form field properties")
 
     fields = Fields(IFormField).omit('__name__', '__parent__', 'visible')
@@ -165,18 +159,15 @@ class FormFieldElementEditor(TableElementEditor):
 class FormFieldEditForm(AdminModalEditForm):
     """Form field properties edit form"""
 
+    @property
+    def subtitle(self):
+        """Form title getter"""
+        translate = self.request.localizer.translate
+        return translate(_("Form field: {}")).format(get_object_label(self.context, self.request))
+
     legend = _("Form field properties")
 
     fields = Fields(IFormField).omit('__name__', '__parent__', 'visible')
-
-    @property
-    def title(self):
-        """Form title getter"""
-        translate = self.request.localizer.translate
-        parent = get_parent(self.context, IFormFieldContainerTarget)
-        return '<small>{}</small><br />{}'.format(
-            get_object_label(parent, self.request),
-            translate(_("Form field: {}")).format(get_object_label(self.context, self.request)))
 
     def update_widgets(self, prefix=None):  # pylint: disable=unused-argument
         """Widgets update"""
@@ -184,6 +175,14 @@ class FormFieldEditForm(AdminModalEditForm):
         name = self.widgets.get('name')
         if name is not None:
             name.mode = DISPLAY_MODE
+
+
+@adapter_config(required=(IFormField, IAdminLayer, IModalPage),
+                provides=IFormTitle)
+def form_field_edit_form_title(context, request, form):
+    """Form field edit form title"""
+    parent = get_parent(context, IFormFieldContainerTarget)
+    return query_adapter(IFormTitle, request, parent, form)
 
 
 @adapter_config(required=(IFormField, IAdminLayer, FormFieldEditForm),
@@ -235,15 +234,12 @@ class FormFieldCloneForm(AdminModalAddForm):
     """Portal template clone form"""
 
     @property
-    def title(self):
+    def subtitle(self):
         """Form title getter"""
         translate = self.request.localizer.translate
-        parent = get_parent(self.context, IFormFieldContainerTarget)
-        return '<small>{}</small><br />{}'.format(
-            get_object_label(parent, self.request),
-            translate(_("Form field: {}")).format(get_object_label(self.context, self.request)))
+        return translate(_("Form field: {}")).format(get_object_label(self.context, self.request))
 
-    legend = _("Clone form field")
+    legend = _("New form field properties")
 
     fields = Fields(IFormField).select('name')
 
